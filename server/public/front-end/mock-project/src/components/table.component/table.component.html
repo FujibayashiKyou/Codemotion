@@ -1,0 +1,16 @@
+<div class="container">
+  <h1>{{tableTitle}}</h1>
+
+  <table class="table table-striped">
+    <ng-container *ngFor="let header of tableHeader" >
+      <th style="text-align: center">{{header}}</th>
+    </ng-container>
+
+    <tr *ngFor="let item of data | keyvalue" style="text-align: center">
+      <ng-container *ngFor= "let field of item.value | keyvalue:keepOriginalOrder">
+        <td>{{field.value}}</td>
+      </ng-container>
+    </tr>
+  </table>
+</div>
+
