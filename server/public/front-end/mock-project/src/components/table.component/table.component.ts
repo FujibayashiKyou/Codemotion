@@ -1,109 +1,102 @@
-import { Product } from '../../models/Product';
-import { Component, OnInit, DoCheck } from '@angular/core';
-import { DataService } from '../../services/data.service/data.service';
-
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import { Customer } from '../../models/Customer';
-import { Invoice } from '../../models/Invoice';
-import { SharingService } from '../../services/sharing.service/sharing.service';
-import { StaticVaruables } from '../../shared/static.varuables';
-
 @Component({
   selector: 'app-table-component',
   templateUrl: './table.component.html',
-  styleUrls: []
+  styleUrls: ['./table.component.css'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0', display: 'none'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 
 export class TableComponent implements OnInit, DoCheck {
+
   // Varuable to contain Database objects
-  private tableTitle: string;
-  private tableHeader: string[];
-  private data: any[];
+  tableTitle: string;
+  columnsToDisplay: string[];
+  expandedElement: IInvoice | null;
+  isInvoice = false;
+
+  // Our responce from tables
+  public dataSource: any;
 
   // Message needeet to update table when link from NavMenuBar will pressed
   private message: string;
   private isUpdate = false;
 
+
   constructor(private service: DataService, private sharingService: SharingService) { }
 
-  // When SPA start - we ned to show "INVOICE" data table
-  ngOnInit(): void { this.getInvoiceList(); }
+  // When Page start, we need to view Invoice table
+  ngOnInit(): void { this.updateTable(StaticVaruables.Nav_MenuBar_InvoicesId); }
 
   // Here we catch NavMenuBar click, and get Message from it
   ngDoCheck(): void {
     // Get message from NavMenuBar item clicked. If we have different messages -> Update table
     this.sharingService.currentMessage.subscribe(message => {
-      if (this.message !== message) {
+      if (this.message !== message && message !== '') {
         this.message = message;
-
-        // Mark table as unupdateble
-        this.isUpdate = false;
+        console.log('Message: ', message);
+        // Update table view
+        this.updateTable(this.message);
       }
     });
+  }
 
-    // Check if table has been already updated. If YES -> return
-    if (this.isUpdate === true) { return; }
+    // Update table view
+    private updateTable(source: string) {
+      // Prepare some information about table
+      this.prepareTable(source);
+      this.service.getData(source).subscribe( data => {
+        this.dataSource = new MatTableDataSource(data);
+      }, error => {
+        console.log('Troubles with GET request. Look at "table.component.ts"', error);
+      });
+    }
 
-    // If table is not update, get Message from NavMenuBar and get neddeed information
-    switch (this.message) {
-      case(StaticVaruables.NavMenuBarProductsId): {
-        this.getProductList();
-        break;
-      }
-      case(StaticVaruables.NavMenuBarCustomersId): {
-        this.getCustomerList();
-        break;
-      }
-      case(StaticVaruables.NavMenuBarInvoicesId): {
-        this.getInvoiceList();
-        break;
+    // Detect kind of table
+    private prepareTable(source: string) {
+      // Is this Invoice Api Url?
+      this.isInvoice = (source === StaticVaruables.Nav_MenuBar_InvoicesId) ? true : false;
+      const isProducts = (source === StaticVaruables.Nav_MenuBar_ProductsId) ? true : false;
+
+      if (this.isInvoice) {                                        // If it is Invoice table
+        this.tableTitle = StaticVaruables.Invoice_Table_Title;
+        this.columnsToDisplay = StaticVaruables.Invoice_Field_Set;
+      } else if (isProducts) {                                     // If it is Products table
+        this.tableTitle = StaticVaruables.Product_Table_Title;
+        this.columnsToDisplay = StaticVaruables.Product_Field_Set;
+      } else {                                                     // If it is Customer table
+        this.tableTitle = StaticVaruables.Customers_Table_Title;
+        this.columnsToDisplay = StaticVaruables.Customers_Field_Set;
       }
     }
 
-    // Set table as updated
-    this.isUpdate = true;
+  // Filter for Customer and Product tables
+  applyFilter(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  // Get PRODUCTS list
-  getProductList() {
-    this.tableTitle = 'PRODUCTS';
-    this.tableHeader = Product.fieldSet;
-
-    this.service.getProducts().subscribe( (data: Product[]) => {
-      console.log('PRODUCTS: ', data);
-      this.data = data;
-    }, error => {
-      console.log('PRODUCTS RECEIVE FROM DATABASE ERROR | ', error);
-    });
-  }
-
-  // Get CUSTOMERS list
-  getCustomerList() {
-    this.tableTitle = 'CUSTOMERS';
-    this.tableHeader = Customer.fieldSet;
-
-    this.service.getCustomers().subscribe( (data: Customer[]) => {
-      console.log('CUSTOMERS: ', data);
-      this.data = data;
-    }, error => {
-      console.log('CUSTOMERS RECEIVE FROM DATABASE ERROR | ', error);
-    });
-  }
-
-  // Get INVOICES list
-  getInvoiceList() {
-    this.tableTitle = 'INVOICES';
-    this.tableHeader = Invoice.fieldSet;
-
-    this.service.getInvoices().subscribe( (data: Invoice[]) => {
-      console.log('INVOICES: ', data);
-      this.data = data;
-    }, error => {
-      console.log('INVOICES RECEIVE FROM DATABASE ERROR | ', error);
-    });
-  }
-
-  // Safe original order from JSON answer
-  public keepOriginalOrder = (a, b) => a.key;
 }
+
+
+/* --------------------------------------------------------------------- */
+// System imports
+import { MatTableDataSource } from '@angular/material';
+import { Component, DoCheck, OnInit } from '@angular/core';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
+
+
+// Import Services
+import { DataService } from '../../services/data.service/data.service';
+import { SharingService } from '../../services/sharing.service/sharing.service';
+
+// Import Vocabulary
+import { StaticVaruables } from '../../shared/static.varuables';
+
+// Import animation
+import {animate, state, style, transition, trigger} from '@angular/animations';
+import { IInvoice } from '../../interfaces/IInvoice';

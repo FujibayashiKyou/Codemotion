@@ -1,16 +1,57 @@
-<div class="container">
-  <h1>{{tableTitle}}</h1>
+<!-- Use This TEMPLATE if we have INVOICE -->
+<div class="container" *ngIf="isInvoice">
+   <h1>{{tableTitle}}</h1>
 
-  <table class="table table-striped">
-    <ng-container *ngFor="let header of tableHeader" >
-      <th style="text-align: center">{{header}}</th>
+  <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+    <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+      <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+      <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
     </ng-container>
 
-    <tr *ngFor="let item of data | keyvalue" style="text-align: center">
-      <ng-container *ngFor= "let field of item.value | keyvalue:keepOriginalOrder">
-        <td>{{field.value}}</td>
-      </ng-container>
+    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+        <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+          <div class="example-element-diagram">
+            <div class="example-element-position"> {{element.id}} </div>
+            <div class="example-element-symbol"> {{element.customer_id}} </div>
+            <div class="example-element-name"> {{element.discount}} </div>
+            <div class="example-element-weight"> {{element.total}} </div>
+          </div>
+          <div class="example-element-description">
+            {{element.description}}
+            <span class="example-element-description-attribution"> -- Wikipedia </span>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></tr>
+    <tr mat-row *matRowDef="let element; columns: columnsToDisplay;" class="example-element-row"
+      [class.example-expanded-row]="expandedElement === element" (click)="expandedElement = expandedElement === element ? null : element">
     </tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
   </table>
+
 </div>
 
+<!-- If we receive Customer or Product table, use this template-->
+<div class="container" *ngIf="isInvoice == false">
+  <h1>{{tableTitle}}</h1>
+
+  <mat-form-field>
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+  </mat-form-field>
+
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+      <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+      <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+  </table>
+
+</div>
