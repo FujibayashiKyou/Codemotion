@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { DataService } from '../../services/data.service/data.service';
 import { SharingService } from '../../services/sharing.service/sharing.service';
 import { StaticVaruables } from '../../shared/static.varuables';
 
@@ -10,13 +9,12 @@ import { StaticVaruables } from '../../shared/static.varuables';
 
 export class NavMenuComponent {
   // Some constId for navigation links
-  private readonly getProducts = StaticVaruables.NavMenuBarProductsId;
-  private readonly getCustomers = StaticVaruables.NavMenuBarCustomersId;
-  private readonly getInvoices = StaticVaruables.NavMenuBarInvoicesId;
+  readonly getProducts = StaticVaruables.Nav_MenuBar_ProductsId;
+  readonly getCustomers = StaticVaruables.Nav_MenuBar_CustomersId;
+  readonly getInvoices = StaticVaruables.Nav_MenuBar_InvoicesId;
 
   // Get choosen Id and read data table
   private keyId = '';
-  private message: string;
 
   constructor(private sharingService: SharingService) { }
 
