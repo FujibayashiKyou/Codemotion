@@ -1,4 +1,10 @@
 export class StaticVaruables {
+
+  // Basic Api Routes
+  static readonly Get_Customers_Api: string =  'http://localhost:8000/api/customers';
+  static readonly Get_Invoices_Api: string =   'http://localhost:8000/api/invoices';
+  static readonly Get_Products_Api: string =   'http://localhost:8000/api/products';
+
   // Navigation bar LinksID //
   static readonly Nav_MenuBar_ProductsId = 'products';
   static readonly Nav_MenuBar_CustomersId = 'customers';
@@ -13,4 +19,5 @@ export class StaticVaruables {
 
   static readonly Product_Table_Title: string = 'Products';
   static readonly Product_Field_Set: string[] = ['id', 'name', 'price'];
+
 }

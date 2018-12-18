@@ -1,0 +1,39 @@
+#placeholder {
+  display: block;
+}
+
+table.example-full-width {
+  display: block;
+}
+
+table.example-full-width tbody {
+  display: block;
+}
+
+table.example-full-width tbody tr {
+  display: block;
+}
+
+table.example-full-width tbody tr td{
+  width: 33%;
+  padding: 0 25px 0 0;
+}
+
+
+#address {
+  width: inherit;
+  padding: 0px;
+}
+
+#address div.col-xs-6{
+  padding: 0px;
+}
+
+#address div.col-xs-6 mat-form-field {
+  display: contents;
+}
+
+div.container.mat-dialog-actions {
+  width: inherit;
+  padding: 0px;
+}

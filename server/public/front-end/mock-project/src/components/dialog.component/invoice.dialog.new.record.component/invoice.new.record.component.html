@@ -1,0 +1,63 @@
+<form class="example-form">
+  <mat-form-field class="example-full-width" id="placeholder">
+    <input matInput placeholder="Invoice App" disabled value="Create new record">
+  </mat-form-field>
+
+  <table class="example-full-width" cellspacing="0">
+    <tr>
+      <td>
+        <mat-form-field class="example-full-width">
+        <input matInput placeholder="Customer name" type="text" [formControl]="myControl" [matAutocomplete]="auto" [(ngModel)]="customer">
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+          <mat-option *ngFor="let customer of filteredCustomers | async " [value]="customer">
+              id: {{customer.id}} | {{customer.name}}
+          </mat-option>
+        </mat-autocomplete>
+        </mat-form-field>
+      </td>
+
+      <td>
+        <mat-form-field class="example-full-width">
+        <input matInput placeholder="Customer`s phone number" [(ngModel)]="phone" name="phone">
+        </mat-form-field>
+      </td>
+
+      <td>
+        <mat-form-field class="example-full-width">
+            <input matInput placeholder="Customer`s ID" disabled [(ngModel)]="id" name="id">
+        </mat-form-field>
+      </td>
+  </table>
+
+  <div class="container" id="address">
+    <div class="col-xs-6">
+      <mat-form-field class="example-full-width">
+        <textarea matInput placeholder="Address" [(ngModel)]="address" name="address" style='height: 15px'></textarea>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="container" mat-dialog-actions>
+    <button mat-button (click)='onNoClick()'>No Thanks</button>
+    <button mat-button (click)='onYesClick()' cdkFocusInitial>Ok</button>
+  </div>
+
+</form>
+
+
+<!--
+<h1 mat-dialog-title> Create new record... </h1>
+
+<mat-form-field>
+  <input matInput [(ngModel)]='customer_id' placeholder='Choose Customer please: '>
+</mat-form-field>
+
+<div>
+    <p>"{{data | json}}" </p>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)='onNoClick()'>No Thanks</button>
+  <button mat-button [mat-dialog-close]='customer_id' cdkFocusInitial>Ok</button>
+</div>
+-->

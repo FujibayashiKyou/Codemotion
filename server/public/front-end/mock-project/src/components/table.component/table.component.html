@@ -1,6 +1,8 @@
 <!-- Use This TEMPLATE if we have INVOICE -->
 <div class="container" *ngIf="isInvoice">
-   <h1>{{tableTitle}}</h1>
+  <h1>{{tableTitle}}</h1>
+
+  <button class='col-xs-6' mat-raised-button (click)="addRow()"> Add column </button>
 
   <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
     <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
