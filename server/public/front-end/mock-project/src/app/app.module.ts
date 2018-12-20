@@ -12,6 +12,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DemoMaterialModule } from '../material-module';
 // tslint:disable-next-line:max-line-length
 import { DialogComponent } from '../components/dialog.component/invoice.dialog.new.record.component/invoice.new.record.component';
+import { BucketComponent } from '../components/dialog.component/bucket.component/bucket.component';
 
 
 @NgModule({
@@ -20,6 +21,7 @@ import { DialogComponent } from '../components/dialog.component/invoice.dialog.n
     NavMenuComponent,
     TableComponent,
     DialogComponent,
+    BucketComponent
   ],
   entryComponents: [DialogComponent],
   imports: [
