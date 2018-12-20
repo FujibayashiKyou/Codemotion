@@ -1,0 +1,80 @@
+#placeholder {
+  display: block;
+}
+
+table.example-full-width {
+  display: block;
+}
+
+table.example-full-width tbody {
+  display: block;
+}
+
+table.example-full-width tbody tr {
+  display: block;
+}
+
+table.example-full-width tbody tr td{
+  width: 33%;
+  padding: 0 0px 0 25px;
+}
+
+#customersName {
+  padding: 0;
+}
+
+.mat-dialog-action {
+  float: right;
+}
+
+
+#address-container {
+  width: inherit;
+  padding: 0px;
+}
+
+#address-container div.col-xs-6{
+  padding: 0px;
+  float: right;
+
+  width: 65%;
+}
+
+#address-container div.col-xs-6 mat-form-field {
+  display: contents;
+}
+
+
+#dialog-bottom-controllers {
+  width: auto;
+  float: right;
+  padding: 30px 0;
+}
+
+#dialog-done-cancel-buttons{
+  padding: 0 0 0 16px;
+}
+
+/*  PRODUCTS BLOCK */
+#product-table-container {
+  width: inherit;
+  height: 480px;
+  padding: 20px;
+}
+
+#products-table {
+  width: 100%;
+  text-align: center;
+}
+
+#products-table th {
+  text-align: center;
+}
+
+#product-quantity {
+  text-align: right;
+}
+
+#map-paginator {
+  margin-top: 20px;
+}

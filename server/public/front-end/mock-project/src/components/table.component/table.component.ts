@@ -24,13 +24,14 @@ export class TableComponent implements OnInit, DoCheck {
 
   // Message needeet to update table when link from NavMenuBar will pressed
   private message: string;
-  private isUpdate = false;
 
 
-  constructor(private service: DataService, private sharingService: SharingService) { }
+  constructor(private service: DataService,
+     private sharingService: SharingService,
+     private dialog: MatDialog) { }
 
   // When Page start, we need to view Invoice table
-  ngOnInit(): void { this.updateTable(StaticVaruables.Nav_MenuBar_InvoicesId); }
+  ngOnInit(): void { this.updateTable(StaticVaruables.Get_Invoices_Api); }
 
   // Here we catch NavMenuBar click, and get Message from it
   ngDoCheck(): void {
@@ -45,46 +46,50 @@ export class TableComponent implements OnInit, DoCheck {
     });
   }
 
-    // Update table view
-    private updateTable(source: string) {
-      // Prepare some information about table
-      this.prepareTable(source);
-      this.service.getData(source).subscribe( data => {
-        this.dataSource = new MatTableDataSource(data);
-      }, error => {
-        console.log('Troubles with GET request. Look at "table.component.ts"', error);
-      });
-    }
+  // Update table view
+  private updateTable(source: string) {
+    // Prepare some information about table
+    this.prepareTable(source);
+    this.service.getData(source).subscribe( data => {
+      this.dataSource = new MatTableDataSource(data);
+    }, error => {
+      console.log('Troubles with GET request. Look at "table.component.ts"', error);
+    });
+  }
 
-    // Detect kind of table
-    private prepareTable(source: string) {
-      // Is this Invoice Api Url?
-      this.isInvoice = (source === StaticVaruables.Nav_MenuBar_InvoicesId) ? true : false;
-      const isProducts = (source === StaticVaruables.Nav_MenuBar_ProductsId) ? true : false;
+  // Detect kind of table
+  private prepareTable(source: string) {
+    // Is this Invoice Api Url?
+    this.isInvoice = (source === StaticVaruables.Get_Invoices_Api) ? true : false;
+    const isProducts = (source === StaticVaruables.Get_Products_Api) ? true : false;
 
-      if (this.isInvoice) {                                        // If it is Invoice table
-        this.tableTitle = StaticVaruables.Invoice_Table_Title;
-        this.columnsToDisplay = StaticVaruables.Invoice_Field_Set;
-      } else if (isProducts) {                                     // If it is Products table
-        this.tableTitle = StaticVaruables.Product_Table_Title;
-        this.columnsToDisplay = StaticVaruables.Product_Field_Set;
-      } else {                                                     // If it is Customer table
-        this.tableTitle = StaticVaruables.Customers_Table_Title;
-        this.columnsToDisplay = StaticVaruables.Customers_Field_Set;
-      }
+    if (this.isInvoice) {                                        // If it is Invoice table
+      this.tableTitle = StaticVaruables.Invoice_Table_Title;
+      this.columnsToDisplay = StaticVaruables.Invoice_Field_Set;
+    } else if (isProducts) {                                     // If it is Products table
+      this.tableTitle = StaticVaruables.Product_Table_Title;
+      this.columnsToDisplay = StaticVaruables.Product_Field_Set;
+    } else {                                                     // If it is Customer table
+      this.tableTitle = StaticVaruables.Customers_Table_Title;
+      this.columnsToDisplay = StaticVaruables.Customers_Field_Set;
     }
+  }
 
   // Filter for Customer and Product tables
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
+  // Add row will create dialog, where we can input data
+  addRow() {
+    let temp = new InvoiceNewRecordComponent(this.dialog);
+  }
 }
 
 
 /* --------------------------------------------------------------------- */
 // System imports
-import { MatTableDataSource } from '@angular/material';
+import { MatTableDataSource, MatDialog } from '@angular/material';
 import { Component, DoCheck, OnInit } from '@angular/core';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -100,3 +105,5 @@ import { StaticVaruables } from '../../shared/static.varuables';
 // Import animation
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import { IInvoice } from '../../interfaces/IInvoice';
+import { InvoiceNewRecordComponent } from '../dialog.component/invoice.dialog.new.record.component/invoice.new.record.component';
+

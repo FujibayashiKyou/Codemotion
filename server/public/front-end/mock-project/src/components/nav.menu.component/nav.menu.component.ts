@@ -30,6 +30,8 @@ export class NavMenuComponent {
     }
 
     // Send message into TableComponent
-    this.sharingService.changeMessage(this.keyId);
+    if (this.keyId === this.getProducts) { this.sharingService.changeMessage(StaticVaruables.Get_Products_Api); }
+    if (this.keyId === this.getCustomers) { this.sharingService.changeMessage(StaticVaruables.Get_Customers_Api); }
+    if (this.keyId === this.getInvoices) { this.sharingService.changeMessage(StaticVaruables.Get_Invoices_Api); }
   }
 }

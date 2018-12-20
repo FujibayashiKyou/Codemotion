@@ -3,6 +3,11 @@ table {
   text-align: center;
 }
 
+button {
+  margin: 16px 0px;
+  float: right
+}
+
 th.mat-header-cell {
   text-align: center;
 }
