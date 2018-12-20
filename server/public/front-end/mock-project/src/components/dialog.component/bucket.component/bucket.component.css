@@ -1,0 +1,13 @@
+/*  BUCKET BLOCK */
+#bucket-table-container {
+  width: inherit;
+  height: 400px;
+}
+
+#bucket-table {
+  width: 100%;
+}
+
+#map-paginator {
+  margin-top: 20px;
+}
