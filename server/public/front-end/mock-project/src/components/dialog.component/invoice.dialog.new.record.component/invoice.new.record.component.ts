@@ -2,14 +2,15 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef, MatTableDataSource, MatPaginator } from '@angular/material';
 import { DataService } from '../../../services/data.service/data.service';
 import { StaticVaruables } from '../../../shared/static.varuables';
-import { FormControl } from '@angular/forms';
+import { FormControl, AbstractControl, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
-import {map, startWith} from 'rxjs/operators';
+import {map, startWith, isEmpty} from 'rxjs/operators';
 import { ICustomer } from '../../../interfaces/ICustomer';
 import { IProduct } from '../../../interfaces/IProduct';
 import { SelectionModel } from '@angular/cdk/collections';
 import { IInvoiceItem } from '../../../interfaces/IInvoiceItem';
 import { SharingService } from '../../../services/sharing.service/sharing.service';
+import { CustomValidators } from './validators.custom';
 
 @Component ({
   selector: 'app-add-record-dialog',
@@ -18,19 +19,22 @@ import { SharingService } from '../../../services/sharing.service/sharing.servic
 })
 
 export class DialogComponent implements OnInit {
+  @ViewChild(MatPaginator) set matPaginator(mp: MatPaginator) { this.paginator = mp; this.initDataSourcePaginator(); }
+
+
+  constructor( public dialogRef: MatDialogRef<DialogComponent>, private service: DataService, private sharingService: SharingService) { }
   // Work with autofill input
   myControl = new FormControl();
   private paginator: MatPaginator; // Map paginator use for product list
-  @ViewChild(MatPaginator) set matPaginator(mp: MatPaginator) { this.paginator = mp; this.initDataSourcePaginator(); }
 
   // All needeed information from CUSTOMERS DATABASE
   customersData: ICustomer[]; // get data from database
-  customer: ICustomer; // use for input and get ICustomer object
-  id: any; phone: any; address: any; // use for autofill information about customers
+  customer: ICustomer = {id: null, name: '', phone: '', address: ''};
   filteredCustomers: Observable<ICustomer[]>; // dynamic search <customer> by input his name
 
   // All needeed information from PRODUCTS DATABASE
   isProductChoose = false; // use for display product table-block
+  isItCustomer = false;
   selection = new SelectionModel<IProduct>(true, []); // use for selected products
   productsDataSource: any; // use for format DataSource
   productsColumns = StaticVaruables.Customer_Choose_Products;
@@ -40,18 +44,17 @@ export class DialogComponent implements OnInit {
   bucket: number[] = [];
   invoice_itemId = 0;
 
-
-  constructor( public dialogRef: MatDialogRef<DialogComponent>, private service: DataService, private sharingService: SharingService) { }
-
   // Init Customers database
   ngOnInit(): void {
+    // Protect dialog from missclick
+    this.dialogRef.disableClose = true;
+
     this.service.getData(StaticVaruables.Get_Customers_Api).subscribe( data => {
       this.customersData = data;
       this.observeCustomers();
     });
 
     this.service.getData(StaticVaruables.Get_Products_Api).subscribe( data => {
-      // Write Method here!!!
       this.initDataSource(data);
     });
   }
@@ -62,7 +65,14 @@ export class DialogComponent implements OnInit {
     this.filteredCustomers = this.myControl.valueChanges
     .pipe(
       startWith<string | ICustomer>(''),
-      map( value => typeof value === 'string' ? value : value.name),
+      map( value => {
+        if (typeof value === 'string') {
+          this.resetCustomersValues();
+          return value;
+        } else {
+          this.setCustomersValues(value);
+          return value.name; }
+      }),
       map( name => name ? this.findOption(name) : this.customersData.slice())
     );
   }
@@ -84,10 +94,11 @@ export class DialogComponent implements OnInit {
   onGetProductsClick(): void { this.isProductChoose = true; }
 
   // Handle mouseover of Customers list and if we get mouseout - clear form
-  mouseover(event) { this.id = event.id; this.phone = event.phone; this.address = event.address; }
-  mouseout() { this.id = undefined; this.phone = undefined; this.address = undefined; }
-
-
+  resetCustomersValues() { this.customer.id = null; this.customer.phone = ''; this.customer.address = ''; this.isItCustomer = false; }
+  setCustomersValues(_: ICustomer) { this.customer.id = _.id; this.customer.phone = _.phone; this.customer.address = _.phone; this.isItCustomer = true; }
+  mouseover(customer) { this.setCustomersValues(customer); }
+  mouseout() {this.resetCustomersValues(); }
+  onkeypress(customer) { console.log('customer: ', customer); }
 
   /* ------------------------------------ BLOCK FOR PRODUCTS ------------------------------------ */
   // Init DataSource for <products> table
@@ -118,9 +129,10 @@ export class DialogComponent implements OnInit {
   onDoneClick() {
     // Check for empty list
     if (this.bucket.length === 0) { console.log('Nothing bought!'); return; }
-    // this.sharingService.sendListId(this.bucket); console.log('Message sent!');
+    this.dialogRef.close();
   }
 
+  // Catch selected item, and drop it into bucket
   dropToBucket(product) {
     this.selection.toggle(product);
     const isSelect = this.selection.isSelected(product);
