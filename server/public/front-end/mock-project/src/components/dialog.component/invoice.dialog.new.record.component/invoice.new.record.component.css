@@ -58,23 +58,19 @@ table.example-full-width tbody tr td{
 /*  PRODUCTS BLOCK */
 #product-table-container {
   width: inherit;
-  height: 480px;
+  height: 580px;
   padding: 20px;
 }
 
 #products-table {
   width: 100%;
-  text-align: center;
+  height: 400px;
 }
 
-#products-table th {
-  text-align: center;
-}
-
-#product-quantity {
-  text-align: right;
+#products-table table {
+  width: 100%;
 }
 
 #map-paginator {
-  margin-top: 20px;
+  margin-top: 50px;
 }

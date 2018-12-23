@@ -11,13 +11,14 @@
   ],
 })
 
-export class TableComponent implements OnInit, DoCheck {
-
+export class TableComponent implements OnInit, OnDestroy {
   // Varuable to contain Database objects
   tableTitle: string;
   columnsToDisplay: string[];
   expandedElement: IInvoice | null;
   isInvoice = false;
+
+  customer: ICustomer = {id: null, name: '', phone: '', address: '' };
 
   // Our responce from tables
   public dataSource: any;
@@ -25,18 +26,21 @@ export class TableComponent implements OnInit, DoCheck {
   // Message needeet to update table when link from NavMenuBar will pressed
   private message: string;
 
+  // Save Subscription and unsubscripe in OnDestroy
+  private _dataService: Subscription;
+
 
   constructor(private service: DataService,
      private sharingService: SharingService,
      private dialog: MatDialog) { }
 
   // When Page start, we need to view Invoice table
-  ngOnInit(): void { this.updateTable(StaticVaruables.Get_Invoices_Api); }
+  ngOnInit(): void {
+    // Default table
+    this.updateTable(StaticVaruables.Invoices_Api);
 
-  // Here we catch NavMenuBar click, and get Message from it
-  ngDoCheck(): void {
-    // Get message from NavMenuBar item clicked. If we have different messages -> Update table
-    this.sharingService.currentMessage.subscribe(message => {
+     // Get message from NavMenuBar item clicked. If we have different messages -> Update table
+     this.sharingService.currentMessage.subscribe(message => {
       if (this.message !== message && message !== '') {
         this.message = message;
         console.log('Message: ', message);
@@ -46,11 +50,17 @@ export class TableComponent implements OnInit, DoCheck {
     });
   }
 
+  // Close all subscriptions
+  ngOnDestroy(): void {
+    this._dataService.unsubscribe();
+  }
+
+
   // Update table view
   private updateTable(source: string) {
     // Prepare some information about table
     this.prepareTable(source);
-    this.service.getData(source).subscribe( data => {
+    this._dataService = this.service.getData(source).subscribe( data => {
       this.dataSource = new MatTableDataSource(data);
     }, error => {
       console.log('Troubles with GET request. Look at "table.component.ts"', error);
@@ -60,7 +70,7 @@ export class TableComponent implements OnInit, DoCheck {
   // Detect kind of table
   private prepareTable(source: string) {
     // Is this Invoice Api Url?
-    this.isInvoice = (source === StaticVaruables.Get_Invoices_Api) ? true : false;
+    this.isInvoice = (source === StaticVaruables.Invoices_Api) ? true : false;
     const isProducts = (source === StaticVaruables.Get_Products_Api) ? true : false;
 
     if (this.isInvoice) {                                        // If it is Invoice table
@@ -76,13 +86,18 @@ export class TableComponent implements OnInit, DoCheck {
   }
 
   // Filter for Customer and Product tables
-  applyFilter(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
+  applyFilter(filterValue: string) { this.dataSource.filter = filterValue.trim().toLowerCase(); }
 
   // Add row will create dialog, where we can input data
-  addRow() {
-    let temp = new InvoiceNewRecordComponent(this.dialog);
+  addInvoice() { let temp = new InvoiceNewRecordComponent(this.dialog); }
+
+  // Click handler
+  getInformationAboutCustomer(value) {
+    this.service.getCustomerById(value.customer_id).subscribe(data => {
+      this.customer = data;
+      console.log('Click: ', this.customer);
+    });
+
   }
 }
 
@@ -90,7 +105,7 @@ export class TableComponent implements OnInit, DoCheck {
 /* --------------------------------------------------------------------- */
 // System imports
 import { MatTableDataSource, MatDialog } from '@angular/material';
-import { Component, DoCheck, OnInit } from '@angular/core';
+import { Component, DoCheck, OnInit, OnDestroy } from '@angular/core';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
@@ -106,4 +121,6 @@ import { StaticVaruables } from '../../shared/static.varuables';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import { IInvoice } from '../../interfaces/IInvoice';
 import { InvoiceNewRecordComponent } from '../dialog.component/invoice.dialog.new.record.component/invoice.new.record.component';
+import { Subscription } from 'rxjs';
+import { ICustomer } from '../../interfaces/ICustomer';
 

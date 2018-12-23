@@ -2,7 +2,7 @@ export class StaticVaruables {
 
   // Basic Api Routes
   static readonly Get_Customers_Api: string =  'http://localhost:8000/api/customers';
-  static readonly Get_Invoices_Api: string =   'http://localhost:8000/api/invoices';
+  static readonly Invoices_Api: string =   'http://localhost:8000/api/invoices';
   static readonly Get_Products_Api: string =   'http://localhost:8000/api/products';
 
   // TEST
@@ -26,4 +26,7 @@ export class StaticVaruables {
 
   // Product table for DialogForm. When <new Invoice> created
   static readonly Customer_Choose_Products: string[] = ['select', 'id', 'name', 'price'];
+
+  // Bucket table for BucketComponent. Additional field -> QUANTITY
+  static readonly Bucket_Information_Fields: string[] = ['id', 'name', 'price', 'quantity'];
 }
