@@ -1,16 +1,15 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef, MatTableDataSource, MatPaginator } from '@angular/material';
+import { MatDialog, MatDialogRef, MatTableDataSource, MatPaginator, ErrorStateMatcher } from '@angular/material';
 import { DataService } from '../../../services/data.service/data.service';
 import { StaticVaruables } from '../../../shared/static.varuables';
-import { FormControl, AbstractControl, Validators } from '@angular/forms';
+import { FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
 import { Observable } from 'rxjs';
-import {map, startWith, isEmpty} from 'rxjs/operators';
+import {map, startWith} from 'rxjs/operators';
 import { ICustomer } from '../../../interfaces/ICustomer';
 import { IProduct } from '../../../interfaces/IProduct';
 import { SelectionModel } from '@angular/cdk/collections';
-import { IInvoiceItem } from '../../../interfaces/IInvoiceItem';
 import { SharingService } from '../../../services/sharing.service/sharing.service';
-import { CustomValidators } from './validators.custom';
+import { CustomerNameValidator } from '../../../shared/validators/customer.validator';
 
 @Component ({
   selector: 'app-add-record-dialog',
@@ -20,12 +19,12 @@ import { CustomValidators } from './validators.custom';
 
 export class DialogComponent implements OnInit {
   @ViewChild(MatPaginator) set matPaginator(mp: MatPaginator) { this.paginator = mp; this.initDataSourcePaginator(); }
+  private paginator: MatPaginator; // Map paginator use for product list
 
 
   constructor( public dialogRef: MatDialogRef<DialogComponent>, private service: DataService, private sharingService: SharingService) { }
   // Work with autofill input
-  myControl = new FormControl();
-  private paginator: MatPaginator; // Map paginator use for product list
+  myControl = new FormControl('', [ Validators.required, Validators.pattern(''), CustomerNameValidator.validCustomer ] );
 
   // All needeed information from CUSTOMERS DATABASE
   customersData: ICustomer[]; // get data from database
