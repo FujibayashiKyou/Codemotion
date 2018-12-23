@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import {ReactiveFormsModule, FormsModule} from '@angular/forms';
-import {MatNativeDateModule, MatDialogModule} from '@angular/material';
+import {MatNativeDateModule, MatDialogModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from '@angular/material';
 
 import { AppComponent } from './app.component';
 import { TableComponent } from '../components/table.component/table.component';
@@ -35,7 +35,7 @@ import { BucketComponent } from '../components/dialog.component/bucket.component
     MatNativeDateModule,
     ReactiveFormsModule,
   ],
-  providers: [],
+  providers: [ {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}} ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,9 +1,9 @@
-<!------------------------- CUSTOMERS BLOCK ------------------------->
 <form class="example-form">
   <mat-form-field class="example-full-width" id="placeholder">
     <input matInput placeholder="Invoice App" disabled value="Create new record">
   </mat-form-field>
 
+  <!------------------------- CUSTOMERS BLOCK ------------------------->
   <table class="example-full-width" cellspacing="0">
     <tr>
       <td id="customersName">
@@ -96,7 +96,7 @@
           <!-- Price Column -->
           <ng-container matColumnDef="price">
             <th mat-header-cell *matHeaderCellDef> Price </th>
-            <td mat-cell *matCellDef="let product"> {{product.price}} </td>
+            <td mat-cell *matCellDef="let product"> {{product.price | currency}} </td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="productsColumns"></tr>
