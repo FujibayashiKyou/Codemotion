@@ -100,7 +100,7 @@ export class DialogComponent implements OnInit {
 
   // Handle mouseover of Customers list and if we get mouseout - clear form
   resetCustomersValues() { this.customer.id = null; this.customer.phone = ''; this.customer.address = ''; this.isItCustomer = false; }
-  setCustomersValues(_: ICustomer) { this.customer.id = _.id; this.customer.phone = _.phone; this.customer.address = _.phone; this.isItCustomer = true; }
+  setCustomersValues(_: ICustomer) { this.customer.id = _.id; this.customer.phone = _.phone; this.customer.address = _.address; this.isItCustomer = true; }
   mouseover(customer) { this.setCustomersValues(customer); }
   mouseout() {this.resetCustomersValues(); }
   onkeypress(customer) { console.log('customer: ', customer); }
