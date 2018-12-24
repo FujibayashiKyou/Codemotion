@@ -1,4 +1,4 @@
-table {
+#invoice-table {
   width: 100%;
   text-align: center;
 }
@@ -55,11 +55,4 @@ tr.example-element-row:not(.example-expanded-row):active {
 
 .example-element-description-attribution {
   opacity: 0.5;
-}
-
-
-/* FOR PRODUCT AND CUSTOMER TABLE*/
-.mat-form-field {
-  font-size: 14px;
-  width: 100%;
 }

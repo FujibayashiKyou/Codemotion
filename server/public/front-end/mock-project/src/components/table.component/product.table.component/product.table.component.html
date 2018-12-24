@@ -1,0 +1,20 @@
+<h1>{{tableName}}</h1>
+
+<mat-form-field id='filter'>
+  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+</mat-form-field>
+
+<table id='product-table' mat-table [dataSource]="data" class="mat-elevation-z8">
+
+  <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+    <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+    <div *ngIf="column === 'price'" > <td mat-cell *matCellDef="let element"> {{element[column] | currency}} </td> </div>
+    <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></tr>
+  <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+</table>
+
+<!-- Add paginator -->
+<mat-paginator id="product-paginator" [pageSizeOptions]="[10, 15, 25]" showFirstLastButtons></mat-paginator>

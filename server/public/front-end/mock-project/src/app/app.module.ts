@@ -13,6 +13,9 @@ import { DemoMaterialModule } from '../material-module';
 // tslint:disable-next-line:max-line-length
 import { DialogComponent } from '../components/dialog.component/invoice.dialog.new.record.component/invoice.new.record.component';
 import { BucketComponent } from '../components/dialog.component/bucket.component/bucket.component';
+import { ProductTableComponent } from 'src/components/table.component/product.table.component/product.table.component';
+import { CustomerTableComponent } from 'src/components/table.component/customer.table.component/customer.table.component';
+import { InvoiceTableComponent } from 'src/components/table.component/invoice.table.component/invoice.table.component';
 
 
 @NgModule({
@@ -20,6 +23,9 @@ import { BucketComponent } from '../components/dialog.component/bucket.component
     AppComponent,
     NavMenuComponent,
     TableComponent,
+    ProductTableComponent,
+    CustomerTableComponent,
+    InvoiceTableComponent,
     DialogComponent,
     BucketComponent
   ],
@@ -35,7 +41,7 @@ import { BucketComponent } from '../components/dialog.component/bucket.component
     MatNativeDateModule,
     ReactiveFormsModule,
   ],
-  providers: [ {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}} ],
+  providers: [ {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 3500}} ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
