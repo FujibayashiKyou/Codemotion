@@ -124,37 +124,3 @@ export class BucketComponent implements OnInit, OnDestroy {
   // Get total cost of Order
   getTotalCost() { return this.bucket.map(t => t.total).reduce((acc, value) => acc + value, 0); }
 }
-
-
-
-  // // Init datasource for Table
-  // fillBucket(shopList: number[], bucket: IProduct[]) {
-  //   // Step 1. Detect direction. Or we will add products to bucket, or not
-  //   const direction = shopList.length > bucket.length ? true : false;
-  //   console.log('Direction is: ', direction);
-
-  //   // Step 2. Create Switch - Case.
-  //   switch (direction) {
-  //     case (true): {             // If we have to add products do this case
-  //       shopList.forEach(node => {
-  //         this.dataService.getProductInfo(node).subscribe(product => {
-  //           bucket.indexOf(product) === -1 ? bucket.push(product) : console.log('Product already here: ', product);
-  //         });
-  //       });
-  //       break;
-  //     }
-  //     case (false): {            // If we have to remove products do this case
-  //       let newBucket: IProduct[] = [];
-
-  //       shopList.forEach(node => {
-  //         this.dataService.getProductInfo(node).subscribe(product => {
-  //           bucket.indexOf(product) !== -1 ? console.log('Product was removed: ', product) : console.log('This will never run here');
-  //           bucket.indexOf(product) !== -1 ? newBucket.push(product) : console.log('This will never run here');
-  //         });
-  //       });
-  //       // Rewrite our bucket
-  //       bucket = newBucket;
-  //       break;
-  //     }
-  //   }
-  // }

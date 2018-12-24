@@ -1,59 +1,14 @@
 <!-- Use This TEMPLATE if we have INVOICE -->
-<div id="main-table" class="container" *ngIf="isInvoice">
-  <h1>{{tableTitle}}</h1>
-
-  <button class='col-xs-6' mat-raised-button (click)="addInvoice()"> Add Invoice </button>
-
-  <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
-    <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
-      <th mat-header-cell *matHeaderCellDef> {{column}} </th>
-      <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
-    </ng-container>
-
-    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
-    <ng-container matColumnDef="expandedDetail">
-      <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
-        <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-          <div class="example-element-diagram">
-            <div class="example-element-photo"> Photo </div>
-          </div>
-          <div class="example-element-description">
-            <strong>Name: </strong> {{customer.name}} <br>
-            <strong>Phone: </strong> {{customer.phone}} <br>
-            <strong>Address: </strong> {{customer.address}} <br>
-            <span class="example-element-description-attribution"> -- Some more information about customer. </span>
-          </div>
-        </div>
-      </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></tr>
-    <tr mat-row *matRowDef="let element; columns: columnsToDisplay;" class="example-element-row"
-      [class.example-expanded-row]="expandedElement === element" (click)="expandedElement = expandedElement === element ? null : element" (click)='getInformationAboutCustomer(element)'>
-    </tr>
-    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
-  </table>
-
+<div class="container" *ngIf="isInvoice">
+  <app-invoice-table-component> </app-invoice-table-component>
 </div>
 
-<!-------------------------- PRODUCT & CUSTOMER TEMPLATE -------------------------------------->
-<!-- If we receive Customer or Product table, use this template-->
-<div class="container" *ngIf="isInvoice == false">
-  <h1>{{tableTitle}}</h1>
+<!-- Use This TEMPLATE if we have PRODUCT -->
+<div class="container" *ngIf="isInvoice == false && isProduct == true">
+  <app-product-table-component></app-product-table-component>
+</div>
 
-  <mat-form-field>
-    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
-  </mat-form-field>
-
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
-    <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
-      <th mat-header-cell *matHeaderCellDef> {{column}} </th>
-      <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></tr>
-    <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
-  </table>
-
+<!-- Use This TEMPLATE if we have CUSTOMER -->
+<div class="container" *ngIf="isInvoice == false && isProduct == false">
+  <app-customer-table-component></app-customer-table-component>
 </div>

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef, MatTableDataSource, MatPaginator, ErrorStateMatcher } from '@angular/material';
+import { MatDialog, MatDialogRef, MatTableDataSource, MatPaginator, ErrorStateMatcher, MatSnackBar } from '@angular/material';
 import { DataService } from '../../../services/data.service/data.service';
 import { StaticVaruables } from '../../../shared/static.varuables';
 import { FormControl, Validators, FormGroupDirective, NgForm } from '@angular/forms';
@@ -10,6 +10,7 @@ import { IProduct } from '../../../interfaces/IProduct';
 import { SelectionModel } from '@angular/cdk/collections';
 import { SharingService } from '../../../services/sharing.service/sharing.service';
 import { CustomerNameValidator } from '../../../shared/validators/customer.validator';
+import { CurrencyPipe, getCurrencySymbol } from '@angular/common';
 
 @Component ({
   selector: 'app-add-record-dialog',
@@ -22,8 +23,10 @@ export class DialogComponent implements OnInit {
   private paginator: MatPaginator; // Map paginator use for product list
 
 
-  constructor( public dialogRef: MatDialogRef<DialogComponent>, private service: DataService, private sharingService: SharingService) { }
+  constructor( public dialogRef: MatDialogRef<DialogComponent>,
+    private service: DataService, private sharingService: SharingService, public snackBar: MatSnackBar) { }
   // Work with autofill input
+
   myControl = new FormControl('', [ Validators.required, Validators.pattern(''), CustomerNameValidator.validCustomer ] );
 
   // All needeed information from CUSTOMERS DATABASE
@@ -42,6 +45,9 @@ export class DialogComponent implements OnInit {
   // All needeed information to build InvoiceItem object
   bucket: number[] = [];
   invoice_itemId = 0;
+
+  // Total count
+  total = 0;
 
   // Init Customers database
   ngOnInit(): void {
@@ -94,7 +100,7 @@ export class DialogComponent implements OnInit {
 
   // Handle mouseover of Customers list and if we get mouseout - clear form
   resetCustomersValues() { this.customer.id = null; this.customer.phone = ''; this.customer.address = ''; this.isItCustomer = false; }
-  setCustomersValues(_: ICustomer) { this.customer.id = _.id; this.customer.phone = _.phone; this.customer.address = _.phone; this.isItCustomer = true; }
+  setCustomersValues(_: ICustomer) { this.customer.id = _.id; this.customer.phone = _.phone; this.customer.address = _.address; this.isItCustomer = true; }
   mouseover(customer) { this.setCustomersValues(customer); }
   mouseout() {this.resetCustomersValues(); }
   onkeypress(customer) { console.log('customer: ', customer); }
@@ -140,10 +146,19 @@ export class DialogComponent implements OnInit {
       // Pull products.id into array, for getting information about them.
       this.bucket.push(product.id);
       this.sharingService.sendListId(this.bucket); console.log('Message sent! =->', this.bucket);
+
+      // Snack-Bar
+      this.total += product.price;
+      this.snackBar.open('Drop to bucket: ', product.name + ( ' (Total: ' + this.total.toFixed(2) + ' USD )'));
+
     } else {
       let index = 0; // Set up index for search
       this.bucket.map( x => { product.id === x ? this.bucket.splice(index, 1) : index++; });
       this.sharingService.sendListId(this.bucket); console.log('Message sent! =->', this.bucket);
+
+      // Snack-Bar
+      this.total -= product.price;
+      this.snackBar.open('Remove from bucket: ', product.name + ( ' (Total: ' + this.total.toFixed(2) + ' USD )'));
     }
 
   }
